@@ -54,6 +54,8 @@ const server = http.createServer((req, res) => {
     // GET /dogs
     if (req.method === 'GET' && req.url === '/dogs') {
       // Your code here
+      res.setHeader("Content-Type","application/json");
+      res.write(JSON.stringify(dogs));
 
       return res.end();
     }
@@ -64,6 +66,10 @@ const server = http.createServer((req, res) => {
       if (urlParts.length === 3) {
         const dogId = urlParts[2];
         // Your code here
+        const dog = dogs[dogId -1]
+        res.setHeader("Content-Type","application/json");
+        res.write(JSON.stringify(dog));
+
       }
       return res.end();
     }
@@ -72,6 +78,18 @@ const server = http.createServer((req, res) => {
     if (req.method === 'POST' && req.url === '/dogs') {
       const { name, age } = req.body;
       // Your code here
+      const newDog = {
+        dogId: getNewDogId(),
+        name: name,
+        age: age
+      }
+
+      dogs.push(newDog);
+      res.statusCode = 201;
+      res.setHeader("Content-Type","application/json");
+      res.write(JSON.stringify(newDog));
+
+
       return res.end();
     }
 
@@ -81,6 +99,14 @@ const server = http.createServer((req, res) => {
       if (urlParts.length === 3) {
         const dogId = urlParts[2];
         // Your code here
+        const { name, age } = req.body;
+        let dogIndex = dogs.findIndex(dog => String(dog.dogId) === dogId);
+        let dog = dogs[dogIndex];
+        dog.name = name;
+        dog.age = age;
+        res.statusCode = 200;
+        res.setHeader("Content-Type","application/json");
+        res.write(JSON.stringify(dog));
       }
       return res.end();
     }
@@ -91,6 +117,18 @@ const server = http.createServer((req, res) => {
       if (urlParts.length === 3) {
         const dogId = urlParts[2];
         // Your code here
+        let dogIndex = dogs.findIndex(dog => String(dog.dogId) === dogId);
+
+        dogs.splice(dogIndex, 1 );
+        res.setHeader('Content-Type', 'application/json');
+        res.write(JSON.stringify({ message: `Successfully deleted` }))
+
+
+
+
+
+
+        //END YOUR CODE
       }
       return res.end();
     }
